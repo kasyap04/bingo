@@ -19,6 +19,20 @@ main{
     display: none;
 }
 
+
+.menu-outer{
+    width: auto;
+    height: auto;
+}
+
+.menu-outer button{
+    outline: none;
+    border: none;
+    background: none;
+}
+
+
+
 .field-cont{
     /* background-color: lightblue; */
     margin: 10px 0;

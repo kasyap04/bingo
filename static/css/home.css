@@ -252,7 +252,7 @@
     position: fixed;
     background-color: ghostwhite;
     top: 40px;
-    right: 0;
+    right: -150px;
     padding: 10px;
     /* box-shadow: 0 3px 10px 1500px rgba(26, 26, 26, 0.397) ; */
     box-shadow: 0 3px 10px 1px rgba(26, 26, 26, 0.397) ;

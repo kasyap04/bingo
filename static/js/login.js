@@ -6,10 +6,12 @@ $.ajax({
     success : (r) => {
         console.log(r) ;
         try{
-            let data = JSON.parse(resJson(r)) ;
-            if(data == "rh"){
-                location.href = "/"   ;
-            } 
+            if(r){
+				let data = JSON.parse(resJson(r)) ;
+				if(data == "rh"){
+					location.href = "/"   ;
+				} 
+			}
         } catch(e){
             console.log(e) ;
         }
@@ -109,5 +111,54 @@ document.getElementById('signupBtn').addEventListener("click", () => {
 // ******************* LOGIN ******************************************
 
 document.getElementById('loginBtn').addEventListener("click", () => {
-    console.log(1) ;
+    let username = document.getElementById('loginUsername').value,
+        password = document.getElementById('loginPass').value ;
+
+    if(username && password) {
+        loadingAnim(1) ;
+        $.ajax({
+            cache: false,
+            type: "POST",
+            url: "login.php",
+            data: { u: username, p: password, s: 3 },
+            success : (r) => {
+                loadingAnim(0) ;
+                console.log(r) ;
+                try{
+                    let data = JSON.parse(resJson(r)) ;
+                    if(data == "s"){
+                        location.reload() ;
+                    } else if(data == "ef"){
+                        makeLineMsg("Please fill all fields", "red", 2500) ;
+                    } else if(data == "nf"){
+                        makeLineMsg("User not found", "red", 2500) ;
+                    }
+                } catch(e){
+                    console.log(e) ;
+                }
+            },
+            error: (jqXHR, exception, responseText) => {
+                loadingAnim(0) ;
+                console.log(jqXHR, exception, responseText) ;
+            }
+        }) ;
+    }
 }) ;
+
+
+
+switchToSignup = () => {
+    $(".login").hide() ;
+    $(".signup").show() ;
+
+    $(".menu-outer").html('<button onclick="switchToLogin()">Login</button>') ;
+
+}
+
+
+switchToLogin = () => {
+    $(".signup").hide() ;
+    $(".login").show() ;
+
+    $(".menu-outer").html('<button onclick="switchToSignup()">Signup</button>') ;
+}

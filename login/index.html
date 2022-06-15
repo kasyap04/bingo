@@ -18,7 +18,10 @@
         <header class="body-header">
             <section> <h2>BINGO</h2> </section>
             <section>
-                <div class="menu-outer"></div>
+                <div class="menu-outer">
+                    <button onclick="switchToLogin()">Login</button>
+                    <!-- <button onclick="switchToSignup()">Signup</button> -->
+                </div>
             </section>
         </header>
 
@@ -52,12 +55,12 @@
                     <section class="field-cont">
                         <span>Username</span>
                         <section> <input type="text" id="loginUsername" autocomplete="off" oninput="checkUsername(this)"> </section>
-                        <label class="err">Username not available</label>
+                        <label class="err"></label>
                     </section>
                     <section class="field-cont">
                         <span>Create password</span>
                         <section> <input type="password" id="loginPass"> <span class="password-toggle" data-show="f">show</span> </section>
-                        <label class="err">Username not available</label>
+                        <label class="err"></label>
                     </section>
                     <button id="loginBtn">Login</button>
                 </div>

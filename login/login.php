@@ -9,7 +9,7 @@ if(!empty($swift)){
     $login = new Login() ;
     switch($swift){
         case 1:
-            echo $login->login($_POST['u'], $_POST['p']) ;
+            echo $login->signup($_POST['u'], $_POST['p']) ;
         break ;
 
         case 2:
@@ -17,6 +17,10 @@ if(!empty($swift)){
             if($login->userId != "no"){
                 echo $login->out("rh") ;
             }
+        break ;
+
+        case 3:
+            $login->login($_POST['u'], $_POST['p']) ;
         break ;
     }
 } else {

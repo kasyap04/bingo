@@ -4,6 +4,9 @@ $(".players-cont").css({
     "left" : "-" + ($(".players-cont").width() - 35) + "px" 
 }) ;
 
+// document.body.addEventListener("click", () => {
+// }) ;
+
 openInPlayerCont = item => {
     $(".player-body").hide() ;
     $(".player-inner-head section").removeClass("player-body-selected") ;
@@ -47,8 +50,23 @@ togglePlayerCont = t => {
 
 // *************************** Menu *********************************************
 
-openMenuList = () => {
-    console.log(0) ;
+toggleMenuList = () => {
+    let menuOpenStatus = $(".menu-cont").attr("data-menuOpen") === 'true';
+    if(menuOpenStatus) {
+        closeMenuList() ;
+    } else {
+        $(".menu-cont").animate({
+            "right": "0px"
+        }, 200) ;
+        $(".menu-cont").attr("data-menuOpen", "true") ;
+    }
+}
+
+closeMenuList = () => {
+    $(".menu-cont").animate({
+        "right": "-150px"
+    }, 200) ;
+    $(".menu-cont").attr("data-menuOpen", "false") ;
 }
 
 
@@ -307,8 +325,115 @@ rejectOrAcceptFriend = (id, context, t) => {
             }
         },
         error: (jqXHR, exception, responseText) => {
+            loadingAnim(0) ;
             console.log(jqXHR, exception, responseText) ;
             err() ;
+        }
+    }) ;
+}
+
+
+//  ***********************************LOGOUT************************************
+
+openLogoutCont = () => {
+    $(".logout-outer").show() ;
+    $(".logut-cont").show() ;
+}
+
+closeLogoutCont = () => {
+    $(".logut-cont").hide () ;
+    $(".logout-outer").hide() ;
+    closeMenuList() ;
+}
+
+logout = () => {
+    loadingAnim(1) ;
+    $.ajax({
+        cache: false,
+        type: "POST",
+        url: "",
+        data: {s: 5},
+        success: (r) => {
+            loadingAnim(0) ;
+            console.log(r) ;
+            try{
+                let data = JSON.parse(resJson(r))[0] ;
+                if(data == 's' || data == "l"){
+                    makeLineMsg("Login out", "green", 2500) ;
+                    location.reload() ;
+                } else if(data == "e"){
+                    err() ;
+                }
+            } catch(e){
+                console.log(e) ;
+                err() ;
+            }
+        },
+        error: (jqXHR, exception, responseText) => {
+            loadingAnim(0) ;
+            console.log(jqXHR, exception, responseText) ;
+            err() ;
+        }
+    }) ;
+}
+
+
+
+inviteToGame = id => {
+    if(id){
+        loadingAnim(1) ;
+        $.ajax({
+            cache: false,
+            type: "POST",
+            url: "",
+            data: {s: 6, id: id},
+            success: (r) => {
+                loadingAnim(0) ;
+                console.log(r) ;
+                try{
+                    let data = JSON.parse(resJson(r))[0] ;
+                    if(data == 's'){
+                        makeLineMsg("Request send", "green", 1000) ;
+                    } else if(data == "e"){
+                        err() ;
+                    }
+                } catch(e){
+                    console.log(e) ;
+                    err() ;
+                }
+            },
+            error: (jqXHR, exception, responseText) => {
+                loadingAnim(0) ;
+                console.log(jqXHR, exception, responseText) ;
+                err() ;
+            }
+        }) ;
+    } else
+    err() ;
+}
+
+checkPlayRequest = () => {
+    $.ajax({
+        cache: false,
+        type: "POST",
+        url: "",
+        data: {s: 7},
+        success: (r) => {
+            console.log(r) ;
+            // try{
+            //     let data = JSON.parse(resJson(r))[0] ;
+            //     if(data == 's'){
+            //         makeLineMsg("Request send", "green", 1000) ;
+            //     } else if(data == "e"){
+            //         err() ;
+            //     }
+            // } catch(e){
+            //     console.log(e) ;
+            //     err() ;
+            // }
+        },
+        error: (jqXHR, exception, responseText) => {
+            console.log(jqXHR, exception, responseText) ;
         }
     }) ;
 }

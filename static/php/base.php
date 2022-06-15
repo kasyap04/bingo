@@ -47,6 +47,10 @@ class Bingo{
         return "sta[\"$msg\"]end";
     }
 
+    public function getTimeDifference($start, $end){
+        return 'ok' ;
+    }
+
     // public function __destruct(){
     //     mysqli_close($this->conn) ;
     // }

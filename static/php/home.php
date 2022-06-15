@@ -4,6 +4,7 @@ include "base.php" ;
 
 
 
+
 class Home extends Bingo{
 
     public function __construct(){
@@ -13,6 +14,8 @@ class Home extends Bingo{
         if($this->userId == 'no'){
             header("Location:/login") ;
         }
+
+        date_default_timezone_set("Asia/Kolkata") ;
     }
 
     public function getMyName(){
@@ -105,6 +108,44 @@ class Home extends Bingo{
         echo $this->out('e') ;
         // echo $this->out("s") ;
     }
+
+    public function sendPlayRequest($teammateId){
+        $teammateId = $this->sanitize($teammateId) ;
+        $time = date("Y-m-d H:i:s") ;
+        if(mysqli_query($this->conn, "UPDATE user SET request_id = $this->userId, last_request = '$time' WHERE u_id = $teammateId")){
+            return "s" ;
+        } else
+        return "e" ;
+    }
+
+    public function checkUserAlreadyMatching(){
+        $qry = mysqli_query($this->conn, "SELECT COUNT(*) AS count FROM team WHERE player1 = $this->userId OR player2 = $this->userId") ;
+        return mysqli_fetch_assoc($qry)['count'] == 0 ;
+    }
+
+    public function checkPlayRequest(){
+
+        if($this->checkUserAlreadyMatching()){
+            $timeNow = date("Y-m-d H:i:s") ;
+            $newDate = date("Y-m-d H:i:s", strtotime($timeNow."-10 seconds")) ;
+            echo "$timeNow\n$newDate" ;
+            $qry = mysqli_query($this->conn, "SELECT COUNT(u2.u_id) AS count, u2.name, u2.u_id FROM user u2 JOIN user u1 ON u1.request_id = u2.u_id WHERE u1.last_request >= '$newDate' AND u1.u_id = $this->userId") ;
+            $res = mysqli_fetch_assoc($qry) ;
+            // echo $this->userId ;
+            print_r($res) ;
+        } else
+        return 'pm' ;  // player matched
+
+        // $timeNow = date("Y-m-d H:i:s") ;
+
+        // $newDate = date("Y-m-d H:i:s", strtotime($timeNow."-10 seconds")) ;
+        // echo "$timeNow\n$newDate" ;
+
+        // $qry = mysqli_query($this->conn, "SELECT ") ;
+        // echo $this->getTimeDifference(1, 2) ;
+    }
+
+    // SELECT COUNT(u2.u_id) AS count, u2.name, u2.u_id FROM user u1 JOIN user u2 ON u1.u_id = u2.u_id WHERE u1.last_request >= '2022-06-13 21:26:20' AND u1.u_id = 1;
 
 }
 

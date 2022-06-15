@@ -5,7 +5,6 @@ include "static/php/home.php" ;
 $home = new Home() ;
 
 
-
 $MY_NAME = $home->getMyName() ;
 
 
@@ -65,6 +64,24 @@ if(($_SERVER['REQUEST_METHOD'] === 'POST')){
                         $home->rejectFriendRequest($id) ;
                     }
                 break ;
+
+                case 5:
+                    setcookie("login", "", time() - 3600, "/" ) ;
+                    session_destroy() ;
+                    echo $home->out('s') ;
+                break ;
+
+                case 6:
+                    $id = $_POST['id'] ;
+                    if(!empty($id)){
+                        $res = $home->sendPlayRequest($id) ;
+                        echo $home->out($res) ;
+                    }
+                break ;
+
+                case 7:
+                    $home->checkPlayRequest() ;
+                break ;
             }
         } else
         echo $home->out("e") ;
@@ -95,7 +112,7 @@ if(($_SERVER['REQUEST_METHOD'] === 'POST')){
         <header class="body-header">
             <section> <h2>BINGO</h2> </section>
             <section>
-                <div class="menu-outer" onclick="openMenuList()">
+                <div class="menu-outer" onclick="toggleMenuList()">
                     <div class="menu-icon"></div>
                 </div>
             </section>
@@ -134,31 +151,6 @@ if(($_SERVER['REQUEST_METHOD'] === 'POST')){
                 echo "<div> <input type='text' value='$val' maxlength='2'> </div>\n" ;
             }
             ?>
-            <!-- <div> <input type="text" value="01" maxlength="2"> </div>
-            <div> <input type="text" value="02" maxlength="2"> </div>
-            <div> <input type="text" value="03" maxlength="2"> </div>
-            <div> <input type="text" value="04" maxlength="2"> </div>
-            <div> <input type="text" value="05" maxlength="2"> </div>
-            <div> <input type="text" value="06" maxlength="2"> </div>
-            <div> <input type="text" value="07" maxlength="2"> </div>
-            <div> <input type="text" value="08" maxlength="2"> </div>
-            <div> <input type="text" value="09" maxlength="2"> </div>
-            <div> <input type="text" value="10" maxlength="2"> </div>
-            <div> <input type="text" value="11" maxlength="2"> </div>
-            <div> <input type="text" value="12" maxlength="2"> </div>
-            <div> <input type="text" value="13" maxlength="2"> </div>
-            <div> <input type="text" value="14" maxlength="2"> </div>
-            <div> <input type="text" value="15" maxlength="2"> </div>
-            <div> <input type="text" value="16" maxlength="2"> </div>
-            <div> <input type="text" value="17" maxlength="2"> </div>
-            <div> <input type="text" value="18" maxlength="2"> </div>
-            <div> <input type="text" value="19" maxlength="2"> </div>
-            <div> <input type="text" value="20" maxlength="2"> </div>
-            <div> <input type="text" value="21" maxlength="2"> </div>
-            <div> <input type="text" value="22" maxlength="2"> </div>
-            <div> <input type="text" value="23" maxlength="2"> </div>
-            <div> <input type="text" value="24" maxlength="2"> </div>
-            <div> <input type="text" value="25" maxlength="2"> </div> -->
         </main>
         <button id="randumBtn">Create randum numbers</button>
 
@@ -240,17 +232,17 @@ if(($_SERVER['REQUEST_METHOD'] === 'POST')){
             </div>
         </div>
 
-        <div class="menu-cont">
+        <div class="menu-cont" data-menuOpen="false">
             <article>Send feedback</article>
-            <article>logout</article>
+            <article onclick="openLogoutCont()">logout</article>
         </div>
 
         <div class="logout-outer outer">
             <div class="logut-cont">
                 <article>Are you sure you want to logout?</article>
                 <section>
-                    <button>Now now</button>
-                    <button>Yes</button>
+                    <button onclick="closeLogoutCont()">Now now</button>
+                    <button onclick="logout()">Yes</button>
                 </section>
             </div>
         </div>
