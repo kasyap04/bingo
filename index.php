@@ -80,7 +80,59 @@ if(($_SERVER['REQUEST_METHOD'] === 'POST')){
                 break ;
 
                 case 7:
-                    $home->checkPlayRequest() ;
+                    $play_request = $home->checkPlayRequest() ;
+                    if($play_request['count'] != 'pm' && $play_request['count'] != 0){
+                        $result = array('status' => 's', 'id' => $play_request['u_id'], 'name' => $play_request['name']) ;
+                        echo "sta[".json_encode($result)."]end";
+                    }
+                break ;
+
+                case 8:
+                    $res = $home->rejectRequest() ;
+                    echo $home->out($res) ;
+                break ;
+
+                case 9:
+                    $accept_request = $home->acceptRequest() ; 
+                    if($accept_request['count'] > 0){
+                        if($home->createTeam((int)$accept_request['u_id'])){
+                            $result = array('status' => 's', 'name' => $accept_request['name']) ;
+                            echo "sta[".json_encode($result)."]end";
+                        }
+                    } else
+                    echo $home->out('e') ;
+                break ;
+
+                case 10:
+                    if($home->deactivateTeam()){
+                        echo $home->out('s') ;
+                    } else
+                    echo $home->out('e') ;
+                break ;
+
+                case 11:
+                    $teammate_name = $home->checkTeamCreated() ;
+                    if($teammate_name){
+                        echo 'sta["s", "'.$teammate_name.'"]end' ;
+                    }
+                break ;
+
+                case 12:
+                    $res = $home->checkExitOrStart() ;
+                    if($res['status'] == 'success'){
+                        echo "sta[".json_encode($res)."]end" ;
+                    }
+                break ;
+
+                case 13:
+                    $table = $_POST['t'] ;
+                    $table = $home->sanitize($table) ;
+                    $ready = $home->imReady($table) ;
+                    echo $home->out($ready) ;
+                break ;
+
+                case 14: 
+                    echo $home->out($home->imNotReady()) ;
                 break ;
             }
         } else
@@ -95,7 +147,7 @@ if(($_SERVER['REQUEST_METHOD'] === 'POST')){
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?php echo $MY_NAME ;  ?> @ Bingo</title>
+        <title><?php echo $MY_NAME ;  ?>@Bingo</title>
         <meta charset='UTF-8'>
         <meta name='theme-color' content='#66be66'>
         <meta http-equiv='Cache-Control' content='no-cache, must-revalidate'>
@@ -125,18 +177,31 @@ if(($_SERVER['REQUEST_METHOD'] === 'POST')){
             </section>
             <section class="startBtn-cont">
                 <section class="startBtn-inner">
-                    <button>READY</button> <br>
-                    <span>Game starts in <label>10</label>s</span>
+                    <button onclick="ready(this)" date-ready="f">READY</button> <br>
+                    <span>Game starts in <label id="timer">10</label>s</span>
                 </section>
             </section>
         </header>
 
-        <div class="teammate-cont">
+        <?php
+
+        $teammate = $home->getTeammate() ;
+        $teammate_name = '' ;
+        $display_teammate = 'data-team="f"' ;
+
+        if($teammate){
+            $teammate_name = $teammate['name'] ;
+            $display_teammate = 'style="display:flex" data-team="t"' ;
+        }
+
+        ?>
+
+        <div class="teammate-cont" <?php echo $display_teammate; ?>>
             <article>
-                <span class="textOverDots"><?php echo $MY_NAME  ;  ?></span>
+                <span class="textOverDots"><?php echo $MY_NAME ; ?></span>
             </article>
             <article>
-                <span id="teammateName" class="textOverDots">teammate name</span>
+                <span id="teammateName" class="textOverDots"> <?php echo $teammate_name ; ?> </span>
                 <span onclick="closeTeammate()" class="material-icons remove-teammate">close</span>
             </article>
         </div>
@@ -168,13 +233,16 @@ if(($_SERVER['REQUEST_METHOD'] === 'POST')){
                         
                     <?php
                         $myFriends = $home->getMyFriendList() ;
+                        // print_r($myFriends) ;
                         if($myFriends){
                             foreach($myFriends as $friend){
+                                $friend_play_str = '<span class="material-icons" onclick="inviteToGame('.$friend['id'].')">add</span>' ;
+                                if($friend['matching']){
+                                    $friend_play_str = '<label class="player-matching">Matching</label>' ;
+                                }
                                 echo '<section class="player-list">
                                     <article onclick="openProfile('.$friend['id'].')">'.$friend['name'].'</article>
-                                    <article>
-                                        <span class="material-icons" onclick="inviteToGame('.$friend['id'].')">add</span>
-                                    </article>
+                                    <article>'.$friend_play_str.'</article>
                                 </section>' ;
                             }
                         } else
@@ -249,12 +317,9 @@ if(($_SERVER['REQUEST_METHOD'] === 'POST')){
 
         <div class="gameRequest-cont">
             <section>
-                <b>Vishnu</b> send a request to play together
+                <b id="gameRequesterName"></b> send a request to play together
             </section>
-            <section>
-                <span onclick="rejectGameRequest()" class="material-icons">close</span>
-                <span onclick="acceptGameRequest()" class="material-icons">done</span>
-            </section>
+            <section id="gameRequestActionBtn"></section>
         </div>
 
         <div class="linemsg-cont">This is a message</div>

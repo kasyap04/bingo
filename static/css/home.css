@@ -125,6 +125,13 @@
     display: block;
 }
 
+.player-matching{
+    font-size: 0.7em;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: yellow;
+}
+
 .player-list{
     display: flex;
     justify-content: space-between;

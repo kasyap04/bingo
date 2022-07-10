@@ -47,14 +47,21 @@ class Bingo{
         return "sta[\"$msg\"]end";
     }
 
-    public function getTimeDifference($start, $end){
-        return 'ok' ;
+    public function getTeammate(){
+        if($this->userId == 'no'){
+            return False ;
+        } else {
+            $qry = mysqli_query($this->conn, "SELECT user.u_id, user.name FROM user JOIN team ON user.u_id = team.player2 OR user.u_id = team.player1 WHERE (team.player1 = $this->userId OR team.player2 = $this->userId) AND user.u_id != $this->userId AND team.active = 1") ;
+            if(mysqli_num_rows($qry) == 1){
+                return mysqli_fetch_assoc($qry) ;
+            } else
+            return False ;
+        }
     }
 
     // public function __destruct(){
     //     mysqli_close($this->conn) ;
     // }
 }
-
 
 $bingo = new Bingo();

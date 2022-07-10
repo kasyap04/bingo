@@ -7,6 +7,129 @@ $(".players-cont").css({
 // document.body.addEventListener("click", () => {
 // }) ;
 
+
+const TIME_VAL = {
+    GAME_REQUEST: null,
+    REQUEST_SHOW_TIME: null,
+    CREATE_TEAM_TIMEOUT: null,
+    CREATE_TEAM_INTERVAL: null,
+    TEAMEXIT_OR_START: null,
+    TIMER: null
+} ;
+
+const GLOBALS = {
+    count_down: 5,
+    timer_start: false,
+    im_ready: false
+} ;
+
+
+// ********************************** Check if game is started or teammate exited ********************************************
+
+checkExitOrStart = () => {
+    $.ajax({
+        cache: false,
+        type: "POST",
+        url: "",
+        data: {s: 12},
+        success: (r) => {
+            console.log(r) ;
+            if(r){
+                try{
+                    let data = JSON.parse(resJson(r))[0] ;
+                    console.log(data) ;
+                    if(data.active){
+                        if(data.start.includes('me')){
+                            $(".teammate-cont article:first-child").css({
+                                "color": "#00a30e",
+                                "font-weight": "bold"
+                            }) ;
+                            $(".startBtn-inner button").html("CANCEL") ;
+
+                            if( !GLOBALS.im_ready ){
+                                GLOBALS.im_ready = true ;
+                            }
+
+                        } else{
+                            $(".teammate-cont article:first-child").css({
+                                "color": "#808080",
+                                "font-weight": "normal"
+                            }) ;
+                            $(".startBtn-inner button").html("READY") ;
+                            
+                            if( GLOBALS.im_ready ){
+                                GLOBALS.im_ready = false ;
+                            }
+                        }
+                        if(data.start.includes("teammate")){
+                            $(".teammate-cont article:last-child").css({
+                                "color": "#00a30e",
+                                "font-weight": "bold"
+                            }) ;
+                        } else{
+                            $(".teammate-cont article:last-child").css({
+                                "color": "#808080",
+                                "font-weight": "normal"
+                            }) ;
+                        }
+
+                        if(data.start.includes('me') && data.start.includes("teammate")){
+                            if(!GLOBALS.timer_start){
+                                GLOBALS.timer_start = true ;
+                                document.getElementById('timer').innerText = GLOBALS.count_down ;
+                                $(".startBtn-inner span").css({
+                                    "visibility": "visible"
+                                }) ;
+                                TIME_VAL.TIMER = setInterval(() => {
+                                    document.getElementById('timer').innerText -- ;
+
+                                    if(document.getElementById('timer').innerText <= 0){
+                                        clearInterval(TIME_VAL.TIMER) ;
+                                        location.href = "/start" ;
+                                        console.log("TIMER STOPPED") ;
+                                        clearInterval(TIME_VAL.TEAMEXIT_OR_START) ;
+                                    }
+
+                                }, 1000) ;
+                            }
+                        } else {
+                            clearInterval(TIME_VAL.TIMER) ;
+                            $(".startBtn-inner span").css({
+                                "visibility": "hidden"
+                            }) ;
+                            GLOBALS.timer_start = false ;
+                        }
+
+                    } else {
+                        $(".teammate-cont").hide() ;
+                        GLOBALS.im_ready = false ;
+                        GLOBALS.timer_start = false ;
+                        clearInterval(TIME_VAL.TEAMEXIT_OR_START) ;
+                        TIME_VAL.TEAMEXIT_OR_START = null ;
+                        $(".teammate-cont").attr("data-team", "f") ;
+                        $(".startBtn-inner button").html("READY") ;
+                        $(".startBtn-inner span").css({
+                            "visibility": "hidden"
+                        }) ;
+
+                        startCheckingRequest() ;
+                    }
+                } catch(e){
+                    console.log(e) ;
+                    err() ;
+                }
+            }
+        },
+        error: (jqXHR, exception, responseText) => {
+            loadingAnim(0) ;
+            console.log(jqXHR, exception, responseText) ;
+            err() ;
+        }
+    }) ;
+}
+
+
+
 openInPlayerCont = item => {
     $(".player-body").hide() ;
     $(".player-inner-head section").removeClass("player-body-selected") ;
@@ -70,30 +193,6 @@ closeMenuList = () => {
 }
 
 
-// ************************** Game Request **************************************
-closeGameRequest = () => {
-    $(".gameRequest-cont").animate({
-        "left" : "200%"
-    }) ;
-} ;
-
-showGameRequest = () => {
-    $(".gameRequest-cont").animate({
-        "left" : "100%"
-    }) ;
-} ;
-
-
-// ********************** Accept / reject game request ******************************
-
-acceptGameRequest = () => {
-    closeGameRequest() ;
-} ;
-
-rejectGameRequest = () => {
-    closeGameRequest() ;
-} ;
-
 makeTwoDig = () => {
     for(let i = 0; i < 25; i++){
         
@@ -110,6 +209,8 @@ checkTable = () => {
     $(".table-cont input").css({
         "color": "black"
     }) ;
+
+    makeTwoDig() ;
 
     let uniq = true, empty = true ;
     
@@ -138,7 +239,7 @@ checkTable = () => {
             break ;
         }
 
-        if(cell.value == ""){
+        if(cell.value == "" || isNaN(cell.value) || cell.value > 25 || cell.value <= 0){
             $(table.children[i]).css({
                 "background-color": "red",
                 "color":"white"
@@ -147,7 +248,11 @@ checkTable = () => {
         }
     }
 
-    return uniq && empty ;
+    res = uniq && empty ;
+    if(res){
+        return num ;
+    } else
+    return res ;
 } ;
 
 
@@ -173,13 +278,84 @@ document.getElementById('randumBtn').addEventListener("click", () => {
 
 // ******************** Teammate cont ***************************
 closeTeammate = () => {
-    $(".teammate-cont").hide() ;
+    loadingAnim(1) ;
+    $.ajax({
+        cache: false,
+        type: "POST",
+        url: "",
+        data: {s: 10},
+        success: (r) => {
+            loadingAnim(0) ;
+            console.log(r) ;
+            try{
+                let data = JSON.parse(resJson(r))[0] ;
+                if(data == 's'){
+                    $(".teammate-cont").hide() ;
+                    clearInterval(TIME_VAL.TIMER) ;
+                    $(".startBtn-inner span").css({
+                        "visibility": "hidden"
+                    }) ;
+                    
+                } else if(data == 'e'){
+                    err() ;
+                } else if(data == 'l'){
+                    login() ;
+                }
+            } catch(e){
+                console.log(e) ;
+                err() ;
+            }
+        },
+        error: (jqXHR, exception, responseText) => {
+            loadingAnim(0) ;
+            console.log(jqXHR, exception, responseText) ;
+            err() ;
+        }
+    }) ;
 } ;
 
-showTeammate = () => {
-    document.getElementById('teammateName').innerText = "teammate name"
-    $(".teammate-cont").show() ;
+showTeammate = (teammateName) => {
+    document.getElementById('teammateName').innerText = teammateName ;
+    $(".teammate-cont").css("display", "flex") ;
+    $(".teammate-cont article").css({
+        "color": "#808080",
+        "font-weight": "normal"
+    }) ;
+    $(".teammate-cont").attr("data-team", "t") ;
 } ;
+
+checkIfTeamCreated = () => {
+    console.log('if') ;
+    $.ajax({
+        cache: false,
+        type: "POST",
+        url: "",
+        data: {s: 11},
+        success: (r) => {
+            console.log(r) ;
+            if(r){
+                try{
+                    let data = JSON.parse(resJson(r)) ;
+                    if(data[0] == 's'){
+                        showTeammate(data[1]) ;
+                        clearInterval(TIME_VAL.CREATE_TEAM_INTERVAL) ;
+                        clearTimeout(TIME_VAL.CREATE_TEAM_TIMEOUT) ;
+                    } else if(data[0] == 'e'){
+                        err() ;
+                    }
+                } catch(e){
+                    console.log(e) ;
+                    err() ;
+                }
+            }
+        },
+        error: (jqXHR, exception, responseText) => {
+            loadingAnim(0) ;
+            console.log(jqXHR, exception, responseText) ;
+            err() ;
+        }
+    }) ;
+}
 
 
 createAddFriendTemplet = (data, condition) => {
@@ -394,6 +570,10 @@ inviteToGame = id => {
                     let data = JSON.parse(resJson(r))[0] ;
                     if(data == 's'){
                         makeLineMsg("Request send", "green", 1000) ;
+                        TIME_VAL.CREATE_TEAM_INTERVAL = setInterval(checkIfTeamCreated, 1500) ;
+                        TIME_VAL.CREATE_TEAM_TIMEOUT = setTimeout(() => {
+                            clearInterval(TIME_VAL.CREATE_TEAM_INTERVAL) 
+                        }, 11000) ;
                     } else if(data == "e"){
                         err() ;
                     }
@@ -411,29 +591,173 @@ inviteToGame = id => {
     } else
     err() ;
 }
+// {"status":"s","id":"2","name":"ridhik"}
+
+// ************************** Game Request **************************************
+closeGameRequest = () => {
+    clearTimeout(TIME_VAL.REQUEST_SHOW_TIME) ;
+    $(".gameRequest-cont").animate({
+        "left" : "200%"
+    }) ;
+} ;
+
+showGameRequest = (name, id) => {
+    document.getElementById('gameRequesterName').innerText = name ;
+    document.getElementById('gameRequestActionBtn').innerHTML = `<span onclick="rejectGameRequest()" class="material-icons">close</span>
+    <span onclick="acceptGameRequest(${id})" class="material-icons">done</span>` ;
+
+    $(".gameRequest-cont").animate({
+        "left" : "100%"
+    }) ;
+    // clearInterval(TIME_VAL.GAME_REQUEST) ;
+    TIME_VAL.REQUEST_SHOW_TIME =  setTimeout(closeGameRequest, 10000) ;
+} ;
+
+
+// ********************** Accept / reject game request ******************************
+
+acceptGameRequest = id => {
+    
+    loadingAnim(1) ;
+    $.ajax({
+        cache: false,
+        type: "POST",
+        url: "",
+        data: {s: 9},
+        success: (r) => {
+            loadingAnim(0) ;
+            console.log(r) ;
+            try{
+                let data = JSON.parse(resJson(r))[0] ;
+                if(data.status == 's'){
+                    showTeammate(data.name) ;
+                    closeGameRequest() ;
+                } else if(data == 'e'){
+                    err() ;
+                }
+            } catch(e){
+                console.log(e) ;
+            }
+        },
+        error: (jqXHR, exception, responseText) => {
+            console.log(jqXHR, exception, responseText) ;
+            err() ;
+        }
+    }) ;
+} ;
+
+rejectGameRequest = () => {
+    loadingAnim(1) ;
+    $.ajax({
+        cache: false,
+        type: "POST",
+        url: "",
+        data: {s: 8},
+        success: (r) => {
+            loadingAnim(0) ;
+            console.log(r) ;
+            try{
+                let data = JSON.parse(resJson(r))[0] ;
+                if(data == 's'){
+                    closeGameRequest() ;       
+                    startCheckingRequest() ;
+                    $(".teammate-cont").attr("data-team", "f") ;
+                } else if(data == 'e' || data == 'l'){
+                    err() ;
+                }
+            } catch(e){
+                console.log(e) ;
+                err() ;
+            }
+        },
+        error: (jqXHR, exception, responseText) => {
+            console.log(jqXHR, exception, responseText) ;
+            err() ;
+        }
+    }) ;
+} ;
+
+
 
 checkPlayRequest = () => {
+    console.log(0) ;
     $.ajax({
         cache: false,
         type: "POST",
         url: "",
         data: {s: 7},
         success: (r) => {
-            console.log(r) ;
-            // try{
-            //     let data = JSON.parse(resJson(r))[0] ;
-            //     if(data == 's'){
-            //         makeLineMsg("Request send", "green", 1000) ;
-            //     } else if(data == "e"){
-            //         err() ;
-            //     }
-            // } catch(e){
-            //     console.log(e) ;
-            //     err() ;
-            // }
+            console.log($(".teammate-cont").attr("data-team")) ;
+            if($(".teammate-cont").attr("data-team") == "t" ){
+                clearInterval(TIME_VAL.GAME_REQUEST) ;
+
+                if(TIME_VAL.TEAMEXIT_OR_START == null){
+                    TIME_VAL.TEAMEXIT_OR_START = setInterval(checkExitOrStart, 1500) ;
+                }
+            }
+            if(r){
+
+                try{
+                    let data = JSON.parse(resJson(r))[0] ;
+                    if(data.status == 's'){
+                        showGameRequest(data.name, data.id) ;
+                    }
+                } catch(e){
+                    console.log(e) ;
+                }
+            }
         },
         error: (jqXHR, exception, responseText) => {
             console.log(jqXHR, exception, responseText) ;
         }
     }) ;
 }
+function startCheckingRequest(){
+    TIME_VAL.GAME_REQUEST = setInterval(checkPlayRequest, 1500) ;
+}
+
+startCheckingRequest() ;
+
+
+
+
+ready = t => {
+
+    const table = checkTable() ;
+    if(table){
+    
+        let param = {s: 13, t: JSON.stringify(table)} ;
+        if(GLOBALS.im_ready){
+            param = {s: 14}
+        }
+
+        loadingAnim(1) ;
+        $.ajax({
+            cache: false,
+            type: "POST",
+            url: "",
+            data: param,
+            success: (r) => {
+                loadingAnim(0) ;
+                console.log(r) ;
+                try{
+                    let data = JSON.parse(resJson(r))[0] ;
+                    if(data == 'e'){
+                        err() ;
+                    }
+                } catch(e){
+                    err() ;
+                    console.log(e) ;
+                }
+            },
+            error: (jqXHR, exception, responseText) => {
+                loadingAnim(0) ;
+                err() ;
+                console.log(jqXHR, exception, responseText) ;
+            }
+        }) ;
+    }
+}
+
+
+
