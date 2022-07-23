@@ -1,0 +1,250 @@
+.teammate-cont{
+    display: flex;
+    font-weight: bold;
+}
+
+.teammate-cont article:first-child{
+    color: rgb(10, 118, 133);
+}
+.teammate-cont article:last-child{
+    color: rgb(170, 68, 68);
+}
+
+.table-canvas{
+    /* background-color: lightblue; */
+    margin-top: 30px;
+}
+
+.table-canvas-bingo-cont{
+    /* background-color: lightcoral; */
+    text-align: center;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    color: rgba(128, 128, 128, 0.212);
+    /* color: rgb(6, 196, 123); */
+
+}
+
+.table-canvas-bingo-cont article{
+    /* background-color: lightcyan; */
+    width: 15vw;
+    height: 15vw;
+    max-width: 60px;
+    max-height: 60px;
+    font-size: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid transparent;
+}
+
+/* .table-canvas-bingo-cont article{
+    color: #22b88b;
+}
+
+.table-canvas-bingo-cont article:nth-child(1){
+    animation-name: bingo;
+    animation-duration: 0.5s;
+}
+.table-canvas-bingo-cont article:nth-child(2){
+    animation-name: bingo;
+    animation-duration: 0.5s;
+    animation-delay: 0.1s;
+}
+.table-canvas-bingo-cont article:nth-child(3){
+    animation-name: bingo;
+    animation-duration: 0.5s;
+    animation-delay: 0.2s;
+}
+
+@keyframes bingo {
+    0%{
+        transform: scale(1);
+    } 
+    50%{
+        transform: scale(1.5);
+    }
+    100%{
+        transform: scale(1);
+    }
+} */
+
+.table-cont{
+    margin-top: 0;
+}
+
+.winner-cont-outer{
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.274);
+    top: 0;
+    left: 0;
+    display: none;
+}
+
+.winner-cont{
+    position: absolute;
+    border-radius: 10px;
+    /* height: 200px; */
+    width: 70%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    box-shadow: 0 3px 10px 1500px rgba(26, 26, 26, 0.397) ;
+    overflow: hidden;
+}
+
+.winner-bingo-cont{
+    text-align: center;
+    font-size: 2em;
+}
+
+.winner-cont-top{
+    display: flex;
+    justify-content: center;
+    padding: 5px 0;
+}
+
+.winner-cont-top span{
+    font-size: 5em;
+}
+
+.handshake{
+    color: rgb(47, 185, 219);
+}
+
+.emoji_events{
+    color: rgb(22, 175, 124);
+}
+
+.thumb_down{
+    color: rgb(228, 38, 38);
+}
+
+.winner-cont-bottom{
+    width: 100%;
+    height: calc(100% - 5em);
+    background-color: #16af7c;
+    background-color: #2fb9db;
+    text-align: center;
+    padding: 5px 0;
+}
+
+.winner-cont-bottom article{
+    /* background-color: lightblue; */
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    font-weight: bold;
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+.winner-cont-bottom article:nth-child(2){
+    font-size: 2.5em;
+}
+
+.game-exit-cont{
+    position: fixed;
+    bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+
+.gameOver-back-button{
+    
+    display: flex;
+    align-items: center;
+    
+    outline: none;
+    border-radius: 4px;
+    border: none;
+    padding: 5px 10px;
+    background-color:transparent;
+    color: #fff;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.gameOver-back-button span{
+    padding: 0 6px;
+}
+
+.game-exit-cont article{
+    color: red;
+    font-size: 0.85em;
+    padding-right: 10px;
+}
+
+.exitGamme-confirm-outer{
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    display: none;
+}
+
+.exitGamme-confirm-cont{
+    height: fit-content;
+    width: 70%;
+    max-width: 300px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px 1500px rgba(26, 26, 26, 0.397) ;
+}
+
+.exitGamme-confirm-cont section{
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.exitGamme-confirm-cont section button{
+    outline: none;
+    background: none;
+    font-weight: bold;
+    border: none;
+}
+
+.exitGamme-confirm-cont section button:nth-child(2){
+    color: grey;
+}
+
+.teammateExit-cont{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    text-align: center;
+    padding: 20px;
+    box-shadow: 0 3px 10px 1500px rgba(26, 26, 26, 0.397) ;
+    border: 2px solid red;
+    width: fit-content;
+    display: none ;
+}
+
+.teammateExit-cont article:nth-child(1){
+    color: red;
+    font-size: 1.3em;
+}
+
+.teammateExit-cont article:nth-child(2){
+    color: grey;
+    font-size: 0.8em;
+    margin-top: 10px;
+}

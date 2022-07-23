@@ -125,8 +125,7 @@ if(($_SERVER['REQUEST_METHOD'] === 'POST')){
                 break ;
 
                 case 13:
-                    $table = $_POST['t'] ;
-                    $table = $home->sanitize($table) ;
+                    $table = $_POST['t'] ; // json_encode($_POST['t'], true );
                     $ready = $home->imReady($table) ;
                     echo $home->out($ready) ;
                 break ;
@@ -178,7 +177,7 @@ if(($_SERVER['REQUEST_METHOD'] === 'POST')){
             <section class="startBtn-cont">
                 <section class="startBtn-inner">
                     <button onclick="ready(this)" date-ready="f">READY</button> <br>
-                    <span>Game starts in <label id="timer">10</label>s</span>
+                    <span>Game starts in <label id="timer">5</label>s</span>
                 </section>
             </section>
         </header>

@@ -14,7 +14,7 @@ class Login extends Bingo{
         $password = md5($this->sanitize($password)) ;
         if(!empty($username) && !empty($password)){
             if($this->checkUsernameExist($username)){
-                if(mysqli_query($this->conn, "INSERT INTO user (name, password) VALUES ('$username', '$password')")){
+                if(mysqli_query($this->conn, "INSERT INTO user (name, password, t_game, w_game) VALUES ('$username', '$password', 0, 0)")){
                     $userId = mysqli_insert_id($this->conn) ;
                     $_SESSION['login'] = $userId ;
                     setcookie('login', $userId, time() + (86400 * 30), "/");

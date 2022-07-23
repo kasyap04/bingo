@@ -222,6 +222,16 @@ class Home extends Bingo{
     }
 
     public function imReady($table){
+        $table = json_decode($table) ;
+        $k = 0 ;
+        $table2D = [] ;
+        for($i = 0; $i < 5; $i++){
+            for($j = 0; $j < 5; $j++, $k++){
+                $table2D[$i][$j] = $table[$k] ;
+            }
+        }
+        $table = json_encode($table2D) ;
+
         $qry = "UPDATE team SET num_p1 = CASE WHEN player1 = $this->userId THEN '$table' ELSE num_p1 END, num_p2 = CASE WHEN player2 = $this->userId THEN '$table' ELSE num_p2 END WHERE active = 1" ;
         if(mysqli_query($this->conn, $qry)){
             return 's' ;
@@ -236,7 +246,4 @@ class Home extends Bingo{
         } else
         return 'e' ;
     }
-
-
 }
-

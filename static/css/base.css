@@ -8,6 +8,7 @@ body{
     font-family: 'Karla', sans-serif;
     background-color: ghostwhite;
     user-select: none;
+    user-select: none;
 }
 
 ::-webkit-scrollbar{
@@ -102,6 +103,15 @@ input, button{
 .table-cont div:nth-child(even){
     background-color: rgba(224, 108, 108, 0.247);
 }
+
+/* .table-cont div:nth-child(1){
+    background-color: #ff7373;
+    color: #ffffff                                                                                                                                                      ;
+}
+
+.table-cont div:nth-child(1) input{
+    color: #fff;
+} */
 
 .table-cont input{
     height: 100%;

@@ -47,11 +47,17 @@ class Bingo{
         return "sta[\"$msg\"]end";
     }
 
+    public function getMyName(){
+        $id = $this->userId ;
+        $res = mysqli_query($this->conn, "SELECT name FROM user WHERE u_id = $id") ;
+        return mysqli_fetch_array($res)['name'] ;
+    }
+
     public function getTeammate(){
         if($this->userId == 'no'){
             return False ;
         } else {
-            $qry = mysqli_query($this->conn, "SELECT user.u_id, user.name FROM user JOIN team ON user.u_id = team.player2 OR user.u_id = team.player1 WHERE (team.player1 = $this->userId OR team.player2 = $this->userId) AND user.u_id != $this->userId AND team.active = 1") ;
+            $qry = mysqli_query($this->conn, "SELECT user.u_id, user.name, team.t_id FROM user JOIN team ON user.u_id = team.player2 OR user.u_id = team.player1 WHERE (team.player1 = $this->userId OR team.player2 = $this->userId) AND user.u_id != $this->userId AND team.active = 1") ;
             if(mysqli_num_rows($qry) == 1){
                 return mysqli_fetch_assoc($qry) ;
             } else
