@@ -1,0 +1,159 @@
+.profile-user-cont{
+    /* background-color: lightblue; */
+    padding: 20px;
+    padding-top: 0;
+}
+
+.user-profile-cont{
+    position: relative;
+    width: fit-content;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.user-profile-cont span{
+    font-size: 5em;
+}
+
+.user-profile-cont article{
+    font-size: 1.3em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.user-result-cont{
+    display: flex;
+    /* justify-content: space-between; */
+    margin-top: 20px
+}
+
+.user-result-cont section{
+    border-radius: 8px;
+    width: 100%;
+    margin: 0 5px;
+    text-align: center;
+    padding: 5px 20px;
+}
+
+.user-result-cont section:nth-child(1){
+    background-color: rgba(12, 204, 12, 0.17);
+}
+
+.user-result-cont section:nth-child(2){
+    background-color: rgba(9, 113, 182, 0.087);
+}
+
+.user-result-cont section:nth-child(3){
+    background-color: rgba(255, 11, 11, 0.081);
+}
+
+.user-result-cont section article:nth-child(1){
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.user-result-cont section article:nth-child(2){
+    font-size: 0.8em;
+    color: rgb(90, 90, 90);
+}
+
+.profile-summery-cont{
+    padding: 10px;
+    margin-top: 5px;
+}
+
+.profile-summery-heder{
+    border-bottom: 1px solid rgba(128, 128, 128, 0.212);
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.summery-heading-cont{
+    margin-top: 10px;
+}
+
+.profile-summery-div{
+    background-color: rgba(173, 216, 230, 0.123);
+    padding: 5px 2px;
+    border-radius: 10px;
+}
+
+.summery-heading-cont, .summery-data-cont{
+    display: flex;
+    /* background-color: lightblue; */
+    font-size: 0.8em;
+}
+
+.summery-data-cont{
+    margin: 10px 0;
+    padding: 10px 0;
+    border-bottom: 1px solid #8080801f;
+}
+
+.summery-heading-cont article{
+    color: #808080b7;
+}
+
+.summery-heading-cont article, .summery-data-cont article{
+    width: 100%;
+    text-align: center;
+}
+
+.summery-teammate, .summery-date{
+    min-width: 70px;
+    width: 80px;
+}
+
+.summery-status , .summery-duration{
+    min-width: 54px;
+    margin: 0 5px;
+}
+
+
+.status-win{
+    font-weight: bold;
+    color: green;
+}
+
+.status-lose{
+    font-weight: bold;
+    color: red;
+}
+
+.status-draw{
+    font-weight: bold;
+    color: coral;
+}
+
+.summery-data-cont:last-child{
+    border: none;
+    margin-bottom: 0;
+}
+
+.summery-doData{
+    font-size: 0.8em;
+    text-align: center;
+    margin: 20px 0;
+    color: rgba(39, 39, 39, 0.562);
+}
+
+
+@media only screen and (min-width:750px){
+    .profile-main-cont{
+        display: flex;
+        justify-content: space-between;
+        height: fit-content;
+        margin-top: 20px;
+        padding: 30px;
+    }
+
+    .profile-user-cont{
+        width: 30%;
+        background-color: rgba(211, 211, 211, 0.089);
+        border-radius: 10px;
+    }
+
+    .profile-summery-cont{
+        width: 60% ;
+    }
+}

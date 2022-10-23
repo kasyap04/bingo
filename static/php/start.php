@@ -39,36 +39,43 @@ class Game extends Bingo{
         }
     }
 
-    public function insertIntoRecord(){
-        $date = date("Y-m-d H:i:s") ;
-        $checkTeam = mysqli_query($this->conn, "SELECT t_id FROM record WHERE t_id = $this->teamId") ;
-        if(mysqli_num_rows($checkTeam) == 0){
-            mysqli_query($this->conn, "INSERT INTO record (t_id, started) VALUES ($this->teamId, '$date')")  ;
-            $this->totalGamePlayed($this->userId) ;
-        }
+    public function insertIntoRecord($user_id, $status){
+        $end = date("Y-m-d H:i:s") ;
+        $start = $_SESSION['bingo_started'] ;
+
+        mysqli_query($this->conn, "INSERT INTO record VALUES (NULL, $this->teamId, $user_id, '$status', '$start', '$end')") ;
+
+        mysqli_query($tis->conn, "UPDATE team SET num_p1 = NULL AND num_p2 = NULL WHERE t_id = $this->teamId") ;
+
+        // $checkTeam = mysqli_query($this->conn, "SELECT t_id FROM record WHERE t_id = $this->teamId") ;
+        // if(mysqli_num_rows($checkTeam) == 0){
+        //     mysqli_query($this->conn, "INSERT INTO record (t_id, started) VALUES ($this->teamId, '$date')")  ;
+        //     $this->totalGamePlayed($this->userId) ;
+        // }
+
         
     }
 
-    public function updateRecord($winner){
-        $date = date("Y-m-d H:i:s") ;
-        mysqli_query($this->conn, "UPDATE record SET winner = $winner, ended = '$date' WHERE t_id = $this->teamId") ;
-    }
+    // public function updateRecord($user_id, $status){
+    //     $date = date("Y-m-d H:i:s") ;
+    //     mysqli_query($this->conn, "UPDATE record SET  ended = '$date' WHERE t_id = $this->teamId") ;
+    // }
 
-    public function insertRecordAll(){
-        $ended = date("Y-m-d H:i:s") ;
-        $teamateId = $this->getTeammate()['u_id'] ;
-        $game_start_time_qry = mysqli_query($this->conn, "SELECT started FROM record WHERE t_id = $this->teamId") ; 
-        $game_start_time = mysqli_fetch_assoc($game_start_time_qry)['started'] ;
-        mysqli_query($this->conn, "INSERT INTO record (t_id, winner, started, ended) VALUES($this->teamId, $teamateId, '$game_start_time', '$ended')") ;
-    }
+    // public function insertRecordAll(){
+    //     $ended = date("Y-m-d H:i:s") ;
+    //     $teamateId = $this->getTeammate()['u_id'] ;
+    //     $game_start_time_qry = mysqli_query($this->conn, "SELECT started FROM record WHERE t_id = $this->teamId") ; 
+    //     $game_start_time = mysqli_fetch_assoc($game_start_time_qry)['started'] ;
+    //     mysqli_query($this->conn, "INSERT INTO record (t_id, winner, started, ended) VALUES($this->teamId, $teamateId, '$game_start_time', '$ended')") ;
+    // }
 
-    public function totalGamePlayed($id){
-        mysqli_query($this->conn, "UPDATE user SET t_game = t_game + 1 WHERE u_id = $id") ;
-    }
+    // public function totalGamePlayed($id){
+    //     mysqli_query($this->conn, "UPDATE user SET t_game = t_game + 1 WHERE u_id = $id") ;
+    // }
 
-    public function updateWonGames($id){
-        mysqli_query($this->conn, "UPDATE user SET w_game = w_game + 1 WHERE u_id = $id") ;
-    }
+    // public function updateWonGames($id){
+    //     mysqli_query($this->conn, "UPDATE user SET w_game = w_game + 1 WHERE u_id = $id") ;
+    // }
 
     public function checkBingo($total_numbers, $playerNum){
         $count = 0 ;
@@ -166,22 +173,32 @@ class Game extends Bingo{
                     $result_array['win'] = FALSE ;
                    if($my_bingo_val == 5 && $teammate_bingo_val == 5){
                         $result_array['win'] = 2 ;
-        
-                        $this->updateRecord($this->userId) ;
-                        $this->insertRecordAll() ;
 
-                        $this->updateWonGames($this->userId) ;
+                        self.insertIntoRecord($this->userId, 'draw') ;
+                        
+        
+                        // $this->updateRecord($this->userId) ;
+                        // $this->insertRecordAll() ;
+
+                        // $this->updateWonGames($this->userId) ;
+                    
+                        // $this->exitGame(TRUE) ;
+
         
                    } else {
                         if($my_bingo_val == 5){
                             $result_array['win'] = 'win' ;
-        
-                            $this->updateRecord($this->userId) ;
 
-                            $this->updateWonGames($this->userId) ;
+                            self.insertIntoRecord($this->userId, 'win') ;
+        
+                            // $this->updateRecord($this->userId) ;
+
+                            // $this->updateWonGames($this->userId) ;
+
         
                         } elseif($teammate_bingo_val == 5){
                             $result_array['win'] = 'lose' ;
+                            self.insertIntoRecord($this->userId, 'lose') ;
                         }
                    }
                     
@@ -206,10 +223,23 @@ class Game extends Bingo{
         return $result_array ; 
     }
 
-    public function exitGame(){
+    // public function createTeamWhileExit(){
+    //     $teammateId = $this->getTeammate()['u_id'] ;
+    //     echo $teamateId ;
+    //     $team_check_qry = mysqli_query($this->conn, "SELECT t_id FROM team WHERE active = 1 AND (player1 = $this->userId OR player2 = $this->userId)") ;
+    //     if(mysqli_num_rows($team_check_qry) == ){
+    //         mysqli_query($this->conn, "INSERT INTO team (player1, player2) VALUES ($this->userId, $teammateId)") ;
+    //     }
+    // }
+
+    public function exitGame($flag = ''){
+        if($flag){
+            $this->createTeamWhileExit() ;
+        }
         if(mysqli_query($this->conn, "UPDATE team SET active = 0 WHERE t_id = $this->teamId")){
             $date = date("Y-m-d H:i:s") ;
             mysqli_query($this->conn, "UPDATE record SET exit = $this->userId, ended = '$date' WHERE t_id = $this->teamId") ;
+            
             return 's' ;
         } else
         return 'e' ;

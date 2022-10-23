@@ -77,6 +77,7 @@ toggleExitGameCont = mode => {
 }
 
 setWinner = status => {
+    // console.log(status) ;
     $(".winner-cont-outer").fadeIn() ;
     clearInterval(TIME_VAL.CHECK_NUMBERS) ;
     let icon = $(".winner-cont-top") ,
@@ -97,14 +98,14 @@ setWinner = status => {
     }
 
     document.getElementById('exitTimer').innerText = 5 ;
-    let exitTimer = setInterval(() => {
-        if(document.getElementById('exitTimer').innerText > 1){
-            document.getElementById('exitTimer').innerText -- ;
-        } else {
-            clearInterval(exitTimer) ;
-            goToHomePage() ;
-        }
-    }, 1000) ;
+    // let exitTimer = setInterval(() => {
+    //     if(document.getElementById('exitTimer').innerText > 1){
+    //         document.getElementById('exitTimer').innerText -- ;
+    //     } else {
+    //         clearInterval(exitTimer) ;
+    //         exitGame() ;
+    //     }
+    // }, 1000) ;
 
 }
 
@@ -120,14 +121,14 @@ checkNumbers = () => {
             try{
                 let data = JSON.parse(resJson(r))[0] ;
                 if(data.status){
-                    console.log(data) ;
+                    // console.log(data) ;
                     hilightSelectedNumbers(data.numbers) ;
                     setBingoLevel(data.bingo) ;
-                    if(data.bingo == 5){
+                    // if(data.bingo == 5){
                         if(data.win != false){
                             setWinner(data.win) ;
                         } 
-                    }
+                    // }
 
                 } else {
                     clearInterval(TIME_VAL.CHECK_NUMBERS) ;
@@ -155,7 +156,7 @@ checkNumbers = () => {
     }) ;
 }
 
-// TIME_VAL.CHECK_NUMBERS = setInterval(checkNumbers, 1500) ;
+TIME_VAL.CHECK_NUMBERS = setInterval(checkNumbers, 1500) ;
 
 
 exitGame = () => {

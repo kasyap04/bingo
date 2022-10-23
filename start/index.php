@@ -2,6 +2,10 @@
 <?php
 include "../static/php/start.php" ;
 
+if(!isset($_SESSION['bingo_started'])){
+    $_SESSION['bingo_started'] = date("Y-m-d H:i:s") ;
+}
+
 $game = new Game() ;
 
 
@@ -17,8 +21,12 @@ if(($_SERVER['REQUEST_METHOD'] === 'POST')){
             break ;
 
             case 2:
-                $res = json_encode($game->getMyBingo(), true) ;
+                $result = $game->getMyBingo() ;
+                $res = json_encode($result, true) ;
                 echo "sta[".$res."]end" ;
+                // if($result['win'] != FALSE){
+                //     $game->exitGame(TRUE) ;                  
+                // }
             break ;
 
             case 3:
@@ -35,8 +43,6 @@ if(($_SERVER['REQUEST_METHOD'] === 'POST')){
     
 $game->checkTeamActive() ;
 
-
-echo $game->insertIntoRecord() ;
 
 // print_r($game->getMyBingo() );
 
@@ -58,7 +64,7 @@ $teammate_name = $game->getTeammate()['name']  ;
     <head>
         <title><?php echo $MY_NAME ;  ?>@Bingo</title>
         <meta charset='UTF-8'>
-        <meta name='theme-color' content='#66be66'>
+        <meta name='theme-color' content='#f8f8ff'>
         <meta http-equiv='Cache-Control' content='no-cache, must-revalidate'>
         <meta http-equiv='Pragma' content='no-cache'>
         <meta http-equiv='Expires' content='0'>

@@ -133,6 +133,12 @@ if(($_SERVER['REQUEST_METHOD'] === 'POST')){
                 case 14: 
                     echo $home->out($home->imNotReady()) ;
                 break ;
+
+                case 15:
+                    $feedback = $home->sanitize($_POST['f']) ;
+                    $res = $home->sendFeedback($feedback) ;
+                    echo $home->out($res) ;
+                break ;
             }
         } else
         echo $home->out("e") ;
@@ -148,7 +154,7 @@ if(($_SERVER['REQUEST_METHOD'] === 'POST')){
     <head>
         <title><?php echo $MY_NAME ;  ?>@Bingo</title>
         <meta charset='UTF-8'>
-        <meta name='theme-color' content='#66be66'>
+        <meta name='theme-color' content='#f8f8ff'>
         <meta http-equiv='Cache-Control' content='no-cache, must-revalidate'>
         <meta http-equiv='Pragma' content='no-cache'>
         <meta http-equiv='Expires' content='0'>
@@ -172,7 +178,7 @@ if(($_SERVER['REQUEST_METHOD'] === 'POST')){
         <header class="user-header">
             <section class="username-cont">
                 <span class="material-icons">account_circle</span>
-                <span><?php echo $MY_NAME  ;  ?></span>
+                <span> <a href="/profile"> <?php echo $MY_NAME  ;  ?></a></span>
             </section>
             <section class="startBtn-cont">
                 <section class="startBtn-inner">
@@ -224,7 +230,7 @@ if(($_SERVER['REQUEST_METHOD'] === 'POST')){
                     <section onclick="openInPlayerCont(1)">Friends</section>
                     <section onclick="openInPlayerCont(2)" style="white-space: nowrap ;">Add friend  </section>
                     <section onclick="openInPlayerCont(3)">Request</section>
-                    <section onclick="openInPlayerCont(4)">Chat</section>
+                    <!-- <section onclick="openInPlayerCont(4)">Chat</section> -->
                 </div>
                 <div class="player-inner-body">
 
@@ -300,7 +306,7 @@ if(($_SERVER['REQUEST_METHOD'] === 'POST')){
         </div>
 
         <div class="menu-cont" data-menuOpen="false">
-            <article>Send feedback</article>
+            <article onclick="openSendFeedback()">Send feedback</article>
             <article onclick="openLogoutCont()">logout</article>
         </div>
 
@@ -310,6 +316,16 @@ if(($_SERVER['REQUEST_METHOD'] === 'POST')){
                 <section>
                     <button onclick="closeLogoutCont()">Now now</button>
                     <button onclick="logout()">Yes</button>
+                </section>
+            </div>
+        </div>
+
+        <div class="feedback-outer">
+            <div class="feedback-cont">
+                <section id="feedback" contenteditable></section>
+                <section>
+                    <button onclick="closeFeedbackCont()">Cancel</button>
+                    <button onclick="sendFeedback()">Send feedback</button>
                 </section>
             </div>
         </div>

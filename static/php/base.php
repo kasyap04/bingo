@@ -11,7 +11,7 @@ class Bingo{
     public $userId = "no" ;
 
     function __construct(){
-        $this->conn = $conn = mysqli_connect($this->HOST, $this->USER, $this->PASSWORD, $this->DB) ;
+        $this->conn = mysqli_connect($this->HOST, $this->USER, $this->PASSWORD, $this->DB) ;
         if(mysqli_connect_error()){
             die("ERROR:Could not connect") ;
         }
@@ -63,6 +63,10 @@ class Bingo{
             } else
             return False ;
         }
+    }
+
+    public function getNameById($id){
+        return mysqli_fetch_assoc(mysqli_query($this->conn, "SELECT name FROM user WHERE u_id = $id"))['name']  ;
     }
 
     // public function __destruct(){

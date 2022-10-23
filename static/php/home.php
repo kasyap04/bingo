@@ -246,4 +246,11 @@ class Home extends Bingo{
         } else
         return 'e' ;
     }
+
+    public function sendFeedback($feedback){
+        if(mysqli_query($this->conn, "UPDATE user SET feedback = '$feedback' WHERE u_id = $this->userId")){
+            return 's' ;
+        }
+        return 'e' ;
+    }
 }

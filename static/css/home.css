@@ -15,6 +15,11 @@
     font-size: 1.2em;
 }
 
+.username-cont a{
+    color: #000000;
+    text-decoration: none;
+}
+
 .startBtn-cont{
     text-align: end;
     padding-right: 10px;
@@ -305,4 +310,53 @@
 .logut-cont button:nth-child(1){
     color: grey;
     font-weight: normal;
+}
+
+.feedback-outer{
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    display: none;
+}
+
+.feedback-cont{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 70%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px 1500px rgba(26, 26, 26, 0.397) ; 
+}
+
+#feedback{
+    background-color: rgba(128, 128, 128, 0.123);
+    padding: 10px;
+    min-height: 100px;
+    max-height: 250px;
+    overflow: scroll;
+    outline: none;
+    margin-bottom: 20px;
+}
+
+.feedback-cont section:nth-child(2){
+    display: flex;
+    justify-content: end;
+}
+
+.feedback-cont section:nth-child(2) button{
+    padding: 5px 10px;
+    background: none;
+    font-weight: bold;
+    border: none;
+    outline: none;
+}
+
+.feedback-cont section:nth-child(2) button:nth-child(1){
+    color: grey;
+    margin-right: 10px;
 }

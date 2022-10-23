@@ -33,11 +33,11 @@ checkExitOrStart = () => {
         url: "",
         data: {s: 12},
         success: (r) => {
-            console.log(r) ;
+            // console.log(r) ;
             if(r){
                 try{
                     let data = JSON.parse(resJson(r))[0] ;
-                    console.log(data) ;
+                    // console.log(data) ;
                     if(data.active){
                         if(data.start.includes('me')){
                             $(".teammate-cont article:first-child").css({
@@ -680,14 +680,14 @@ rejectGameRequest = () => {
 
 
 checkPlayRequest = () => {
-    console.log(0) ;
+    // console.log(0) ;
     $.ajax({
         cache: false,
         type: "POST",
         url: "",
         data: {s: 7},
         success: (r) => {
-            console.log($(".teammate-cont").attr("data-team")) ;
+            // console.log($(".teammate-cont").attr("data-team")) ;
             if($(".teammate-cont").attr("data-team") == "t" ){
                 clearInterval(TIME_VAL.GAME_REQUEST) ;
 
@@ -759,5 +759,50 @@ ready = t => {
     }
 }
 
+openSendFeedback = () => {
+    $(".feedback-outer").show() ;
+}
 
+closeFeedbackCont = () => {
+    document.getElementById('feedback').innerText = '' ;
+    $(".feedback-outer").hide() ;
+    closeMenuList() ;
+}
 
+sendFeedback = () => {
+    let feedback = document.getElementById('feedback').innerText.trim() ;
+    if(feedback){
+        loadingAnim(1) ;
+        $.ajax({
+            cache: false,
+            type: "POST",
+            url: "",
+            data: {s: 15, f: feedback},
+            success: (r) => {
+                loadingAnim(0) ;
+                console.log(r) ;
+                try{
+                    let data = JSON.parse(resJson(r))[0] ;
+                    if(data == 'e'){
+                        err() ;
+                    } else if(data == 's'){
+                        makeLineMsg("Feedback send", "green", 1000) ;
+                        closeFeedbackCont() ;
+                    }
+                } catch(e){
+                    err() ;
+                    console.log(e) ;
+                }
+            },
+            error: (jqXHR, exception, responseText) => {
+                loadingAnim(0) ;
+                err() ;
+                console.log(jqXHR, exception, responseText) ;
+            }
+        }) ;
+    }
+}
+
+openProfile = id => {
+    location.href = `/profile/?id=${id}` ;
+}
